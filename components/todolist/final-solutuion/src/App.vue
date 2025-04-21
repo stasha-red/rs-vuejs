@@ -46,9 +46,9 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { reactive, computed } from 'vue'
 
-const todos = ref([
+const todos = reactive([
   { id: 1, text: 'Изучить компоненты Vue.js', completed: true },
   { id: 2, text: 'Создать TodoList приложение', completed: false },
   { id: 3, text: 'Похвалить себя за отличную работу', completed: false },
@@ -56,21 +56,25 @@ const todos = ref([
 
 // Удалить задачу
 const removeTodo = (index) => {
-  todos.value.splice(index, 1)
+  todos.splice(index, 1)
 }
 
 // Количество оставшихся незавершенных задач
 const remainingTodos = computed(() => {
-  return todos.value.filter((todo) => !todo.completed).length
+  return todos.filter((todo) => !todo.completed).length
 })
 
 // Очистить завершенные задачи
 const clearCompleted = () => {
-  todos.value = todos.value.filter((todo) => !todo.completed)
+  for (let i = todos.length - 1; i >= 0; i--) {
+    if (todos[i].completed) {
+      todos.splice(i, 1)
+    }
+  }
 }
 
 const clearAll = () => {
-  todos.value = []
+  todos.splice(0, todos.length)
 }
 </script>
 
