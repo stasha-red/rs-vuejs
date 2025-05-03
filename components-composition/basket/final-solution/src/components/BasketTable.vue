@@ -1,3 +1,20 @@
+<script setup>
+import { computed } from 'vue'
+import BasketTableSummary from './BasketTableSummary.vue'
+import BasketTableItem from './BasketTableItem.vue'
+
+const props = defineProps({
+  basket: {
+    type: Array,
+    required: true,
+  },
+})
+
+const totalPrice = computed(() => {
+  return props.basket.reduce((acc, item) => acc + item.price * item.quantity, 0)
+})
+</script>
+
 <template>
   <table class="basket-table">
     <thead class="basket-table__header">
@@ -14,40 +31,21 @@
         v-for="(item, index) in basket"
         :key="item.id"
         v-bind="item"
-        @increase="() => $emit('increase', item)"
-        @decrease="() => $emit('decrease', item)"
-        @remove="() => $emit('remove', index)"
+        @increase-amount="$emit('increase-amount', item)"
+        @decrease-amount="$emit('decrease-amount', item)"
+        @remove-item="$emit('remove-item', index)"
       />
 
       <tr v-if="basket.length === 0">
-        <td colspan="5"><p class="basket-table__empty">No items</p></td>
+        <td colspan="5">
+          <p class="basket-table__empty">No items</p>
+        </td>
       </tr>
 
-      <BasketTableSummary v-if="basket.length" :total="totalPrice" />
+      <BasketTableSummary v-if="basket.length > 0" :total="totalPrice" />
     </tbody>
   </table>
 </template>
-
-<script setup>
-import { computed } from 'vue'
-import BasketTableItem from './BasketTableItem.vue'
-import BasketTableSummary from './BasketTableSummary.vue'
-
-const props = defineProps(
-  {
-    basket: {
-      type: Array,
-      required: true,
-    }
-  }
-)
-
-const totalPrice = computed(() => {
-  return props.basket.reduce((acc, item) => {
-    return acc + item.price * item.quantity
-  }, 0)
-})
-</script>
 
 <style>
 .basket-table {
@@ -90,10 +88,5 @@ const totalPrice = computed(() => {
 
 .basket-table__body td:last-child {
   padding-right: 5rem;
-}
-
-.basket-table__empty {
-  text-align: center;
-  color: #a7a7a7;
 }
 </style>

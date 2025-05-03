@@ -1,3 +1,32 @@
+<script setup>
+defineProps({
+  name: {
+    type: String,
+    required: true,
+  },
+  price: {
+    type: Number,
+    required: true,
+  },
+  quantity: {
+    type: Number,
+    default: 1,
+  },
+  imageUrl: {
+    type: String,
+    required: true,
+  },
+  color: {
+    type: String,
+    required: true,
+  },
+  size: {
+    type: String,
+    required: true,
+  },
+})
+</script>
+
 <template>
   <tr>
     <td>
@@ -17,16 +46,16 @@
     </td>
     <td>
       <div class="basket-item__quantity">
-        <button class="quantity-button" @click="$emit('decrease')">–</button>
-        <input type="number" :value="quantity" readonly />
-        <button class="quantity-button" @click="$emit('increase')">+</button>
+        <button class="quantity-button" @click="$emit('decrease-amount')">–</button>
+        <input type="number" :value="quantity" min="1" />
+        <button class="quantity-button" @click="$emit('increase-amount')">+</button>
       </div>
     </td>
     <td>
       <p class="basket-item__price">$ {{ price * quantity }}</p>
     </td>
     <td>
-      <button class="btn btn-delete" aria-label="Удалить" @click="$emit('remove')">
+      <button class="btn btn-delete" aria-label="Удалить" @click="$emit('remove-item')">
         <svg
           class="w-6 h-6 text-gray-800 dark:text-white"
           aria-hidden="true"
@@ -49,39 +78,7 @@
   </tr>
 </template>
 
-<script setup>
-defineProps(
-  {
-    name: {
-      type: String,
-      required: true,
-    },
-    price: {
-      type: Number,
-      required: true,
-    },
-    quantity: {
-      type: Number,
-      required: true,
-    },
-    imageUrl: {
-      type: String,
-      required: true,
-    },
-    color: {
-      type: String,
-      required: true,
-    },
-    size: {
-      type: String,
-      required: true,
-    }
-  }
-)
-</script>
-
 <style>
-
 .basket-item {
   display: flex;
   align-items: flex-start;
@@ -118,6 +115,17 @@ defineProps(
   min-width: 140px;
 }
 
+.btn-delete {
+  background-color: transparent;
+  color: #8a33fd;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-delete:hover {
+  color: #5b1f9d;
+}
+
 .basket-item__quantity {
   display: flex;
   align-items: center;
@@ -127,6 +135,20 @@ defineProps(
   overflow: hidden;
 }
 
+.quantity-button {
+  background-color: #f6f6f6;
+  color: #3c4242;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  width: 30px;
+  height: 35px;
+  text-align: center;
+}
+
+.quantity-button:hover {
+  font-weight: 700;
+}
 
 .basket-item__quantity input[type='number'] {
   -moz-appearance: textfield;
@@ -147,5 +169,10 @@ defineProps(
 .basket-item__quantity input[type='number']::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+.basket-table__empty {
+  text-align: center;
+  color: #a7a7a7;
 }
 </style>

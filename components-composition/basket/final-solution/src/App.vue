@@ -1,15 +1,3 @@
-
-<template>
-  <div class="container basket">
-    <BasketTable
-      :basket="basket"
-      @increase="increaseItemQuanity"
-      @decrease="descreaseItemQuanity"
-      @remove="removeItem"
-    />
-  </div>
-</template>
-
 <script setup>
 import { reactive } from 'vue'
 import BasketTable from './components/BasketTable.vue'
@@ -44,8 +32,10 @@ const basket = reactive([
   },
 ])
 
-const descreaseItemQuanity = (item) => {
-  if (item.quantity > 1) item.quantity--
+const decreaseItemQuanity = (item) => {
+  if (item.quantity > 1) {
+    item.quantity--
+  }
 }
 
 const increaseItemQuanity = (item) => {
@@ -57,4 +47,38 @@ const removeItem = (index) => {
 }
 </script>
 
-<style src="./App.css"></style>
+<template>
+  <div class="container basket">
+    <BasketTable
+      :basket="basket"
+      @increase-amount="increaseItemQuanity"
+      @decrease-amount="decreaseItemQuanity"
+      @remove-item="removeItem"
+    />
+  </div>
+</template>
+
+<style>
+body {
+  background-color: #f0f0f0;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Open Sans',
+    'Helvetica Neue',
+    sans-serif,
+    sans-serif;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #fff;
+}
+</style>

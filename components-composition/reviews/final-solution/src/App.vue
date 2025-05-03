@@ -49,7 +49,7 @@ const setFilter = (value) => {
     <h1 class="reviews__title">Отзывы</h1>
 
     <!-- Панель фильтров -->
-    <FilterPanel :filterOptions="filterOptions" @set-filter="setFilter" />
+    <FilterPanel :filter-options="filterOptions" @set-filter="setFilter" />
 
     <!-- Список отзывов -->
     <ReviewList
