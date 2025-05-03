@@ -4,9 +4,9 @@
       <TodoListItem
         v-for="(todo, index) in todos"
         :key="todo.id"
-        :todo="todo"
-        @remove="() => $emit('remove', index)"
-        @update-completed.once="() => (todo.completed = !todo.completed)"
+        v-bind="todo"
+        @remove="() => $emit('remove-todo', index)"
+        @complete.once="() => (todo.completed = !todo.completed)"
       />
     </ul>
     <div class="todo-list__empty" v-if="!todos.length">

@@ -2,7 +2,7 @@
   <div class="container todo-app">
     <h1 class="title">Todo List</h1>
 
-    <TodoList :todos="todos" @remove="removeTodo" />
+    <TodoList :todos="todos" @remove-todo="removeTodo" />
     <TodoFooter
       v-if="todos.length"
       :remaining="remainingTodos"
