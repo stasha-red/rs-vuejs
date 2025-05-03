@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref, computed } from 'vue'
+import { reactive, computed } from 'vue'
 
 // Отзывы с рейтингом
 const reviews = reactive([
@@ -9,7 +9,16 @@ const reviews = reactive([
   { id: 4, author: 'Аноним', text: 'Такое себе', liked: false, rating: 2 },
 ])
 
-const filter = ref('all') // all | liked | notLiked | highRating
+const filterOptions = reactive([
+  { value: 'all', label: 'Все', active: true },
+  { value: 'liked', label: '❤️ Понравившиеся', active: false },
+  { value: 'notLiked', label: '👎 Без лайка', active: false },
+  { value: 'highRating', label: '⭐ 4 и выше', active: false },
+])
+
+const filter = computed(() => {
+  return filterOptions.find(f => f.active).value
+})
 
 const filteredReviews = computed(() => {
   if (filter.value === 'liked') return reviews.filter(r => r.liked)
@@ -27,7 +36,9 @@ const removeReview = (index) => {
 }
 
 const setFilter = (value) => {
-  filter.value = value
+  filterOptions.forEach(f => {
+    f.active = f.value === value
+  })
 }
 </script>
 
@@ -37,36 +48,34 @@ const setFilter = (value) => {
 
     <!-- Панель фильтров -->
     <div class="filters">
-      <button :class="{ active: filter === 'all' }" @click="setFilter('all')">Все</button>
-      <button :class="{ active: filter === 'liked' }" @click="setFilter('liked')">❤️ Понравившиеся</button>
-      <button :class="{ active: filter === 'notLiked' }" @click="setFilter('notLiked')">👎 Без лайка</button>
-      <button :class="{ active: filter === 'highRating' }" @click="setFilter('highRating')">⭐ 4 и выше</button>
+      <button v-for="filter in filterOptions" class="btn btn--filter" :class="{ 'btn--active': filter.active }" @click="setFilter(filter.value)" :key="filter.value">
+        {{ filter.label }}
+      </button>
     </div>
 
     <!-- Список отзывов -->
-    <ul class="reviews__list">
-      <li v-for="(review, index) in filteredReviews" :key="review.id" class="reviews__item">
+    <ul class="review-tiles">
+      <li v-for="(review, index) in filteredReviews" :key="review.id" class="review-tiles__item">
         <div class="review">
-          <p class="review__text">"{{ review.text }}"</p>
-          <p class="review__author">— {{ review.author }}</p>
-
-          <!-- Рейтинг -->
-          <div class="review__rating">
-            <span v-for="n in 5" :key="n" class="star">
-              {{ n <= review.rating ? '★' : '☆' }}
-            </span>
+          <div class="review__header">
+            <p class="review__author">{{ review.author }}</p>
+            <div class="review__rating">
+              <span v-for="n in 5" :key="`star-${n}`" class="star">
+                {{ n <= review.rating ? '★' : '☆' }}
+              </span>
+            </div>
           </div>
-
+          <p class="review__text">"{{ review.text }}"</p>
           <div class="review__actions">
-            <button @click="toggleLike(review)" class="btn-like">
+            <button @click="toggleLike(review)" class="btn btn--like">
               {{ review.liked ? '❤️' : '🤍' }}
             </button>
-            <button @click="removeReview(index)" class="btn-delete">Удалить</button>
+            <button @click="removeReview(index)" class="btn btn-delete">Удалить</button>
           </div>
         </div>
       </li>
 
-      <li v-if="filteredReviews.length === 0" class="reviews__item--empty">
+      <li v-if="filteredReviews.length === 0" class="reviews-tiles__item reviews-tiles__item--empty">
         <p>Нет отзывов по выбранному фильтру.</p>
       </li>
     </ul>
@@ -75,7 +84,7 @@ const setFilter = (value) => {
 
 <style scoped>
 .container {
-  max-width: 600px;
+  max-width: 1200px;
   margin: 2rem auto;
   padding: 1rem;
   font-family: sans-serif;
@@ -91,35 +100,65 @@ const setFilter = (value) => {
   flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
 }
 
-.filters button {
-  padding: 6px 12px;
+.btn {
   border: none;
-  background: #eee;
   cursor: pointer;
   border-radius: 4px;
 }
 
-.filters .active {
+.btn--filter {
+  padding: 6px 12px;
+  background: #eee;
+  border-radius: 4px;
+}
+
+.btn--active {
   background-color: #333;
   color: #fff;
 }
 
-.reviews__list {
+.review-tiles {
+  display: flex;
+  flex-wrap: wrap;
   list-style: none;
+  gap: 1rem;
   padding: 0;
 }
 
-.reviews__item {
-  border-bottom: 1px solid #ddd;
-  padding: 1rem 0;
+.review-tiles__item {
+  flex-basis: calc(100% / 3 - 5rem);
+  border: 1px solid #BEBCBD;
+  border-radius: 10px;
+  padding: 1rem 2rem;
+}
+
+.reviews-tiles__item--empty {
+  text-align: center;
+  padding: 1rem;
+  font-style: italic;
+  color: #777;
+}
+
+@media screen and (max-width: 850px) {
+  .review-tiles__item {
+    flex-basis: calc(100% - 2rem);
+  }
+}
+
+.review__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1rem;
 }
 
 .review__text {
-  font-style: italic;
-  margin-bottom: 0.5rem;
+  color: #807D7E;
+  margin-bottom: 1.5rem;
 }
 
 .review__author {
@@ -130,7 +169,6 @@ const setFilter = (value) => {
 .review__rating {
   color: gold;
   font-size: 1.2rem;
-  margin-bottom: 0.5rem;
 }
 
 .review__actions {
@@ -138,26 +176,16 @@ const setFilter = (value) => {
   gap: 10px;
 }
 
-.btn-like,
-.btn-delete {
+.btn--like,
+.btn--delete {
   padding: 4px 10px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
 }
 
-.btn-like {
+.btn--like {
   background: #f9f9f9;
 }
 
-.btn-delete {
+.btn--delete {
   background: #ffdddd;
-}
-
-.reviews__item--empty {
-  text-align: center;
-  padding: 1rem;
-  font-style: italic;
-  color: #777;
 }
 </style>

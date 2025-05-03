@@ -13,7 +13,7 @@
       <BasketTableItem
         v-for="(item, index) in basket"
         :key="item.id"
-        :item="item"
+        v-bind="item"
         @increase="() => $emit('increase', item)"
         @decrease="() => $emit('decrease', item)"
         @remove="() => $emit('remove', index)"
@@ -23,34 +23,33 @@
         <td colspan="5"><p class="basket-table__empty">No items</p></td>
       </tr>
 
-      <BasketTableSummary v-if="basket.length" :total="totalPrice" :tax="totalTax" />
+      <BasketTableSummary v-if="basket.length" :total="totalPrice" />
     </tbody>
   </table>
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import BasketTableItem from './BasketTableItem.vue'
 import BasketTableSummary from './BasketTableSummary.vue'
 
-defineProps(
+const props = defineProps(
   {
     basket: {
       type: Array,
       required: true,
-    },
-    totalPrice: {
-      type: Number,
-      required: true,
-    },
-    totalTax: {
-      type: Number
-    },
+    }
   }
 )
+
+const totalPrice = computed(() => {
+  return props.basket.reduce((acc, item) => {
+    return acc + item.price * item.quantity
+  }, 0)
+})
 </script>
 
 <style>
-
 .basket-table {
   width: 100%;
   border-collapse: collapse;

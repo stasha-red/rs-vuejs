@@ -3,8 +3,6 @@
   <div class="container basket">
     <BasketTable
       :basket="basket"
-      :totalPrice="totalPrice"
-      :totalTax="totalTax"
       @increase="increaseItemQuanity"
       @decrease="descreaseItemQuanity"
       @remove="removeItem"
@@ -13,7 +11,7 @@
 </template>
 
 <script setup>
-import { reactive, computed } from 'vue'
+import { reactive } from 'vue'
 import BasketTable from './components/BasketTable.vue'
 
 const basket = reactive([
@@ -57,12 +55,6 @@ const increaseItemQuanity = (item) => {
 const removeItem = (index) => {
   basket.splice(index, 1)
 }
-
-const totalPrice = computed(() =>
-  basket.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2)
-)
-
-const totalTax = computed(() => (totalPrice.value * 0.1).toFixed(2))
 </script>
 
 <style src="./App.css"></style>

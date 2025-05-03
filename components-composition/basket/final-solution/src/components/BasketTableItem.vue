@@ -3,27 +3,27 @@
     <td>
       <div class="basket-item">
         <div class="basket-item__image">
-          <img :src="item.imageUrl" alt="" />
+          <img :src="imageUrl" alt="" />
         </div>
         <div class="basket-item__info">
-          <h2 class="basket-item__info-h2">{{ item.name }}</h2>
-          <p class="basket-item__info-p">Color: {{ item.color }}</p>
-          <p class="basket-item__info-p">Size: {{ item.size }}</p>
+          <h2 class="basket-item__info-h2">{{ name }}</h2>
+          <p class="basket-item__info-p">Color: {{ color }}</p>
+          <p class="basket-item__info-p">Size: {{ size }}</p>
         </div>
       </div>
     </td>
     <td>
-      <p class="basket-item__price">$ {{ item.price }}</p>
+      <p class="basket-item__price">$ {{ price }}</p>
     </td>
     <td>
       <div class="basket-item__quantity">
         <button class="quantity-button" @click="$emit('decrease')">–</button>
-        <input type="number" :value="item.quantity" readonly />
+        <input type="number" :value="quantity" readonly />
         <button class="quantity-button" @click="$emit('increase')">+</button>
       </div>
     </td>
     <td>
-      <p class="basket-item__price">$ {{ item.price * item.quantity }}</p>
+      <p class="basket-item__price">$ {{ price * quantity }}</p>
     </td>
     <td>
       <button class="btn btn-delete" aria-label="Удалить" @click="$emit('remove')">
@@ -52,20 +52,30 @@
 <script setup>
 defineProps(
   {
-    item: {
-      type: Object,
+    name: {
+      type: String,
       required: true,
-      validator: (value) => {
-        return (
-          typeof value.name === 'string' &&
-          typeof value.price === 'number' &&
-          typeof value.quantity === 'number' &&
-          typeof value.imageUrl === 'string' &&
-          typeof value.color === 'string' &&
-          typeof value.size === 'string'
-        )
-      },
     },
+    price: {
+      type: Number,
+      required: true,
+    },
+    quantity: {
+      type: Number,
+      required: true,
+    },
+    imageUrl: {
+      type: String,
+      required: true,
+    },
+    color: {
+      type: String,
+      required: true,
+    },
+    size: {
+      type: String,
+      required: true,
+    }
   }
 )
 </script>

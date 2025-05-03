@@ -2,7 +2,7 @@
   <tr>
     <td colspan="5">
       <div class="basket-table__summary">
-        <p class="basket-table__total">Total <b>$ {{ total }}</b></p>
+        <p class="basket-table__total">Total <b>$ {{ total.toFixed(2) }}</b></p>
         <p v-if="tax">Tax $ {{ tax }}</p>
       </div>
     </td>
@@ -10,17 +10,18 @@
 </template>
 
 <script setup>
-defineProps(
+import { computed } from 'vue'
+
+const props = defineProps(
   {
     total: {
       type: Number,
       required: true,
     },
-    tax: {
-      type: Number
-    },
   }
 )
+
+const tax = computed(() => (props.total * 0.1).toFixed(2))
 </script>
 
 <style>
