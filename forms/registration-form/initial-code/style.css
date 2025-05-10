@@ -29,6 +29,7 @@ body {
 .form-group {
   flex-basis: calc(50% - 2rem);
   margin-bottom: 1rem;
+  position: relative;
 }
 
 @media (max-width: 850px) {
@@ -155,13 +156,18 @@ textarea.form-control {
 }
 
 .message {
-  margin: 2rem 0;
-  font-size: 1.5rem;
+  margin: 0;
+  font-size: 0.75rem;
   text-align: center;
+  position: absolute;
+  left: 0;
+  bottom: -1rem;
 }
 
 .message--success {
   color: #368039;
+  position: static;
+  font-size: 20px;
 }
 
 .message--error {
