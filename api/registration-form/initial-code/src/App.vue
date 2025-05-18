@@ -58,6 +58,7 @@ const schema = yup.object({
 <template>
   <div class="container">
     <h1 class="title">Регистрация</h1>
+    <div class="overlay">Идет загрузка данныx </div>
     <Form  v-if="!registrationSuccess" class="registration-form" @submit="register" :validation-schema="schema">
       <div class="form-group">
         <label class="form-label" for="firstname">Имя *</label>
@@ -134,6 +135,9 @@ const schema = yup.object({
     <div v-else class="message message--success">
       Регистрация прошла успешно!
     </div>
+    <br />
+    <br />
+    <div class="error">Произошла ошибка:</div>
   </div>
 </template>
 
@@ -153,6 +157,20 @@ body {
   margin: 0 auto;
   padding: 4rem;
   background-color: #fff;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  z-index: 1;
 }
 
 .title {
@@ -312,6 +330,7 @@ textarea.form-control {
   font-size: 20px;
 }
 
+.error,
 .message--error {
   color: #F44336;
 }

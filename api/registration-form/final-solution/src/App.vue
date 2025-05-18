@@ -1,27 +1,25 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { Form, Field, ErrorMessage } from 'vee-validate';
+import { collection, getDocs, doc, setDoc } from "firebase/firestore";
+import { db } from './firebase'
 import * as yup from 'yup';
 
-const cities = ref([{
-  key: 'msc',
-  value: 'Москва'
-},{
-  key: 'spb',
-  value: 'Санкт-Петербург'
-},
-  {
-  key: 'ovb',
-  value: 'Новосибирск'
-},
-  {
-  key: 'svx',
-  value: 'Екатеринбург'
-},
-  {
-  key: 'other',
-  value: 'Другой'
-}]);
+const cities = ref([]);
+const error = ref('');
+const isLoading = ref(true)
+
+const fetchCities = async () => {
+  try {
+    const citiesCollection = collection(db, 'cities')
+    const citiesSnapshot = await getDocs(citiesCollection)
+    cities.value = citiesSnapshot.docs.map(doc => doc.data())
+  } catch (error) {
+    console.error('Error fetching cities:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
 
 const registrationSuccess = ref(false);
 
@@ -35,10 +33,38 @@ const toggleConfirmPasswordVisibility = () => {
   passwordField.type = passwordField.type === 'password' ? 'text' : 'password';
 };
 
-const register = (values) => {
-  registrationSuccess.value = true;
-  // Здесь можно добавить логику для отправки данных на сервер
-  console.log('Registration data:', values);
+const register = async (values) => {
+  isLoading.value = true;
+  error.value = '';
+
+  const filteredValue = Object.fromEntries(
+    Object.entries(values).filter(([key, value]) => value !== '' && value !== null && value !== undefined)
+  );
+
+  const newUser = {
+    id: Date.now().toString(),
+    ...filteredValue
+  }
+
+  try {
+    const usersCollection = collection(db, 'users')
+    const usersSnapshot = await getDocs(usersCollection)
+    const existingUser = usersSnapshot.docs.find(doc => doc.data().email === newUser.email)
+
+    if (existingUser) {
+      error.value = 'Пользователь с таким email уже существует'
+      return
+    } else {
+      const userRef = doc(db, 'users', newUser.id);
+      setDoc(userRef, newUser).then(() => {
+        registrationSuccess.value = true;
+      });
+    }
+  } catch (error) {
+    console.error('Error checking existing users:', error)
+  } finally {
+    isLoading.value = false;
+  }
 };
 
 const schema = yup.object({
@@ -53,12 +79,17 @@ const schema = yup.object({
   comments: yup.string(),
   terms: yup.bool().required('Вы должны согласиться с условиями пользования и политикой конфиденциальности.'),
 });
+
+onMounted(() => {
+  fetchCities()
+})
 </script>
 
 <template>
   <div class="container">
     <h1 class="title">Регистрация</h1>
-    <Form  v-if="!registrationSuccess" class="registration-form" @submit="register" :validation-schema="schema">
+    <div v-show="isLoading" class="overlay">Идет загрузка данныx </div>
+    <Form v-if="!registrationSuccess" class="registration-form" @submit="register" :validation-schema="schema">
       <div class="form-group">
         <label class="form-label" for="firstname">Имя *</label>
         <Field class="form-control" type="text" id="firstname" name="firstname" />
@@ -134,6 +165,9 @@ const schema = yup.object({
     <div v-else class="message message--success">
       Регистрация прошла успешно!
     </div>
+    <br />
+    <br />
+    <div v-if="error" class="error">Произошла ошибка: {{ error }} </div>
   </div>
 </template>
 
@@ -153,6 +187,20 @@ body {
   margin: 0 auto;
   padding: 4rem;
   background-color: #fff;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  z-index: 1;
 }
 
 .title {
@@ -312,7 +360,8 @@ textarea.form-control {
   font-size: 20px;
 }
 
-.message--error {
+.message--error,
+.error {
   color: #F44336;
 }
 </style>
