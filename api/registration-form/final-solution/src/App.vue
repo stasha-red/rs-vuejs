@@ -167,7 +167,7 @@ onMounted(() => {
     </div>
     <br />
     <br />
-    <div v-if="error" class="error">Произошла ошибка: {{ error }} </div>
+    <div v-show="error" class="error">Произошла ошибка: {{ error }} </div>
   </div>
 </template>
 
