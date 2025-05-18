@@ -11,6 +11,8 @@
       @clear-completed="clearCompleted"
       @clear-all="clearAll"
     />
+    <div>Загрузка...</div>
+    <div>Произошла ошибка:</div>
   </div>
 </template>
 

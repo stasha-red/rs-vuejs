@@ -12,8 +12,8 @@
       @clear-all="clearAll"
     />
 
-    <div v-if="isLoading">Загрузка...</div>
-    <div v-if="error">Произошла ошибка: {{ error }}</div>
+    <div v-show="isLoading">Загрузка...</div>
+    <div v-show="error">Произошла ошибка: {{ error }}</div>
   </div>
 </template>
 
