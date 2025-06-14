@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../styles.css" />
+    <title>Vite App</title>
+  </head>
+  <body>
+    <div id="app">
+      <div class="wrapper">
+        <nav class="navigation">
+          <div class="navigation-left">
+            <a href="../dashboard.html">Dashboard</a>
+            <a href="../tasks.html">Tasks</a>
+            <a href="../settings/profile.html" class="router-link--active">Settings</a>
+          </div>
+        </nav>
+        <main class="container">
+          <div>
+            <h1>Настройки</h1>
+            <div class="settings-tabs">
+              <a href="../settings/profile.html" class="settings-tab router-link--active">
+                Профиль
+              </a>
+              <a href="../settings/security.html" class="settings-tab">Безопасность</a>
+            </div>
+            <div class="settings-panel">
+              <h2>Профиль пользователя</h2>
+              <p><b>Имя:</b> Пользователь</p>
+              <p><b>Email:</b> user@example.com</p>
+              <p><b>Дата регистрации:</b> 2023-01-01</p>
+              <p><b>Последний вход:</b> 2023-10-01</p>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>
