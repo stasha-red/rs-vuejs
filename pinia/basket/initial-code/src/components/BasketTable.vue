@@ -27,14 +27,9 @@ const totalPrice = computed(() => {
       </tr>
     </thead>
     <tbody class="basket-table__body">
-      <BasketTableItem
-        v-for="(item, index) in basket"
-        :key="item.id"
-        v-bind="item"
-        @increase-amount="$emit('increase-amount', item)"
-        @decrease-amount="$emit('decrease-amount', item)"
-        @remove-item="$emit('remove-item', index)"
-      />
+      <BasketTableItem v-for="(item, index) in basket" :key="item.id" v-bind="item"
+        @increase-amount="$emit('increase-amount', item.id)" @decrease-amount="$emit('decrease-amount', item.id)"
+        @remove-item="$emit('remove-item', index)" />
 
       <tr v-if="basket.length === 0">
         <td colspan="5">
